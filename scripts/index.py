@@ -11,6 +11,11 @@ from sys import argv
 
 MEMSIZE = argv[1] if argv[1:] else '8g'
 LOCKFILE = "/var/run/opengrok-indexer"
+try:
+    PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 9090
+except Exception as e:
+    print(e)
+    PORT = 9090
 
 
 class IndexLock(object):
@@ -77,7 +82,7 @@ class IndexLock(object):
 @IndexLock()
 def index(size=MEMSIZE):
     print("Available memory size: %s " % size)
-    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "  Indexing starting.")
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ":  Indexing starting.")
     cmd = """
     opengrok-indexer -J=-Djava.util.logging.config.file=/opengrok/doc/logging.properties \
     -J=-Xmx%s -J=-d64 -J=-server  \
@@ -86,13 +91,13 @@ def index(size=MEMSIZE):
     -s /var/opengrok/src \
     -d /var/opengrok/data -H -P -S \
     -W /var/opengrok/etc/configuration.xml \
-    -U http://localhost:9090/
-    """ % size
+    -U http://localhost:%d/
+    """ % (size, PORT)
     #code = os.system(cmd)
     code = os.popen(cmd).read()
     print(code)
     # code = size
-    print("MESSAGE: " + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "  Indexing finished.")
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ":  Indexing finished.")
     return code
 
 

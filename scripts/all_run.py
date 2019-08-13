@@ -5,9 +5,11 @@
 @file: all_run.py
 @time: 2018/12/11
 """
+import sys
 from sys import argv
 import datetime
 import os
+import utils
 
 MEMSIZE = '8g'
 SRC_DIR = "/src"
@@ -15,6 +17,8 @@ lock_path = '/tmp/index.lock'
 config_path = '/var/opengrok/etc/configuration.xml'
 now = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 print(now)
+PWD = sys.path[0]
+print(PWD)
 
 
 def remove_lock(param):
@@ -97,26 +101,6 @@ def start_tomcat():
     return os.system(cmd)
 
 
-def get_available_memory():
-    cmd = "cat /proc/meminfo | grep MemAvailable"
-    try:
-        free_mem = int(os.popen(cmd).read().split()[1])
-    except Exception as e:
-        print(e)
-        free_mem_final = '8g'
-    else:
-        kw = 'k'
-        if free_mem > 1024:
-            kw = 'm'
-            free_mem = free_mem / 1024
-            if free_mem > 1024:
-                kw = 'g'
-                free_mem = free_mem / 1024
-        free_mem_final = str(int(free_mem * 0.9)) + kw
-    print(free_mem_final)
-    return free_mem_final
-
-
 def get_proj_memory_dict(src_dict):
     # TODO set memory size for each project according to its repo size.
     pass
@@ -168,17 +152,36 @@ def main(params):
 
 
 # get_all_params()
+def get_all_projects():
+    try:
+        os.chdir(SRC_DIR)
+        return os.popen("ls").read().split()
+    except Exception as e:
+        print(e)
+        return
+
+
 if __name__ == '__main__':
-    # startup tomcat.
-    if not start_tomcat():
-        # get server's available memory size.
-        size = get_available_memory()
-        # index opengrok source.
-        if not index_file(size):
-            # startup real-time update scripts.
-            main(argv[1:])
-        else:
-            print("WARNING: Index failed and exit!")
+    # get server's available memory size and all project's list.
+    size = utils.get_available_memory()
+    pro_list = get_all_projects()
+    if not pro_list or not size:
+        print("ERROR: Cannot get projects or available memory size, stop running!")
+        status = False
     else:
-        print("WARNING: Startup tomcat failed and exit!")
+        print('size = %s' % size)
+        print('project_list = %s' % pro_list)
+        status = True
+
+    if status:
+        # startup tomcat.
+        if not start_tomcat():
+            # index opengrok source.
+            if not index_file(size):
+                # startup real-time update scripts.
+                main(argv[1:])
+            else:
+                print("WARNING: Index failed and exit!")
+        else:
+            print("WARNING: Startup tomcat failed and exit!")
 

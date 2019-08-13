@@ -12,6 +12,7 @@ ENV CATALINA_HOME /usr/local/tomcat
 ENV CATALINA_TMPDIR /usr/local/tomcat/temp
 ENV JRE_HOME /usr
 ENV CLASSPATH /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar
+ENV PORT 8080
 
 # add setenv.sh
 COPY setenv.sh $CATALINA_BASE/bin/
@@ -27,5 +28,5 @@ RUN chmod -R +x /scripts
 
 # run
 WORKDIR $CATALINA_HOME
-EXPOSE 8080
+EXPOSE $PORT
 CMD ["/scripts/all_run.py"]
