@@ -7,9 +7,10 @@
 import os
 import datetime
 from sys import argv
+import utils
 
 
-MEMSIZE = argv[1] if argv[1:] else '8g'
+MEMSIZE = argv[1] if argv[1:] else utils.get_available_memory()
 LOCKFILE = "/var/run/opengrok-indexer"
 try:
     PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 9090
@@ -93,7 +94,7 @@ def index(size=MEMSIZE):
     -W /var/opengrok/etc/configuration.xml \
     -U http://localhost:%d/
     """ % (size, PORT)
-    #code = os.system(cmd)
+    # code = os.system(cmd)
     code = os.popen(cmd).read()
     print(code)
     # code = size

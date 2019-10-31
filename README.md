@@ -21,6 +21,13 @@ mkdir -p /mnt/docker/opengrok-scripts/VOLUMNS/log/
 Put all your repo sources into "/mnt/docker/opengrok-scripts/VOLUMNS/src/"
 
 [run]
+
+1. You can set your own tomcat port(-e "PORT=9090"), default is 9090.
+2. TODO
+
+    You can set your own update frequency(-e "FREQ=7d"), default is 7d
+    ("h" means hours, "d" means days, "w" means weeks, "m" means months).
+    
 ```
 docker run -it -d \
 	--net=host \
@@ -28,11 +35,12 @@ docker run -it -d \
 	-v /mnt/docker/opengrok-scripts/VOLUMNS/src/:/src \
 	-v /mnt/docker/opengrok-scripts/VOLUMNS/data/:/data \
 	-v /mnt/docker/opengrok-scripts/VOLUMNS/log/:/log \
-	-e "PORT=9090"
-	test/opengrok 
+	-e "PORT=9090" \
+	-e "FREQ=7d" \
+	test/opengrok \
 	/bin/bash
 docker exec -it opengrok /bin/bash
 startup.sh
-/scripts/all_sync.py
+/scripts/index.py
 ```
 

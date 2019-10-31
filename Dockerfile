@@ -12,7 +12,8 @@ ENV CATALINA_HOME /usr/local/tomcat
 ENV CATALINA_TMPDIR /usr/local/tomcat/temp
 ENV JRE_HOME /usr
 ENV CLASSPATH /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar
-ENV PORT 8080
+ENV PORT 9090
+ENV FREQ 7d
 
 # add setenv.sh
 COPY setenv.sh $CATALINA_BASE/bin/
@@ -25,8 +26,9 @@ COPY server.xml $CATALINA_BASE/conf/
 RUN rm -rf /scripts
 ADD scripts/ /scripts
 RUN chmod -R +x /scripts
+RUN python3 /scripts/index.py
 
 # run
 WORKDIR $CATALINA_HOME
-EXPOSE $PORT
-CMD ["/scripts/all_run.py"]
+EXPOSE $PORT $FREQ
+CMD ["/scripts/autorun.py"]
