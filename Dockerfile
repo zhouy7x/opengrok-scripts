@@ -12,7 +12,7 @@ ENV CATALINA_HOME /usr/local/tomcat
 ENV CATALINA_TMPDIR /usr/local/tomcat/temp
 ENV JRE_HOME /usr
 ENV CLASSPATH /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar
-ENV PORT 9090
+ENV PORT 8080
 ENV FREQ 7d
 ENV http_proxy http://child-prc.intel.com:913
 ENV https_proxy http://child-prc.intel.com:913
