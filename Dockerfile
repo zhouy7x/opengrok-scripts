@@ -28,7 +28,6 @@ COPY server.xml $CATALINA_BASE/conf/
 RUN rm -rf /scripts
 ADD scripts/ /scripts
 RUN chmod -R +x /scripts
-RUN python3 /scripts/index.py
 
 # run
 WORKDIR $CATALINA_HOME
