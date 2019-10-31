@@ -14,7 +14,9 @@ ENV JRE_HOME /usr
 ENV CLASSPATH /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar
 ENV PORT 9090
 ENV FREQ 7d
-
+ENV http_proxy http://child-prc.intel.com:913
+ENV https_proxy http://child-prc.intel.com:913
+ENV NO_PROXY localhost,127.0.0.1
 # add setenv.sh
 COPY setenv.sh $CATALINA_BASE/bin/
 
@@ -30,5 +32,6 @@ RUN python3 /scripts/index.py
 
 # run
 WORKDIR $CATALINA_HOME
-EXPOSE $PORT $FREQ
+EXPOSE $PORT
+EXPOSE $FREQ
 CMD ["/scripts/autorun.py"]
