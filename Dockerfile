@@ -32,5 +32,4 @@ RUN chmod -R +x /scripts
 # run
 WORKDIR $CATALINA_HOME
 EXPOSE $PORT
-EXPOSE $FREQ
 CMD ["/scripts/autorun.py"]
