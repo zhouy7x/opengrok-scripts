@@ -10,7 +10,7 @@ import argparse
 import utils
 
 
-SRC_DIR = '/src'
+SRC_DIR = '/opengrok/src'
 P_list = os.popen('ls %s' % SRC_DIR).read().split()
 
 

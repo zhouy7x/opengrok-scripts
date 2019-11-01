@@ -13,7 +13,7 @@ RUN apt-get update
 RUN cp `ls -t distribution/target/*.tar.gz | head -n1 |awk '{printf("%s",$0)}'` /opengrok.tar.gz
 
 FROM tomcat:9-jre8
-LABEL maintainer "opengrok-dev@yahoogroups.com"
+LABEL maintainer "zhouy7x@gmail.com"
 
 # prepare OpenGrok binaries and directories
 COPY --from=fetcher opengrok.tar.gz /opengrok.tar.gz
@@ -24,7 +24,7 @@ RUN mkdir -p /opengrok /opengrok/etc /opengrok/data /opengrok/src && \
 # install dependencies and Python tools
 ENV http_proxy http://10.239.4.80:913
 ENV https_proxy http://10.239.4.80:913
-RUN apt-get update && apt-get install -y git subversion mercurial unzip inotify-tools python3 python3-pip python3-venv  && \
+RUN apt-get update && apt-get install -y git subversion mercurial unzip inotify-tools python python3 python3-pip python3-venv  && \
     python3 -m pip install /opengrok/tools/opengrok-tools*
 
 # compile and install universal-ctags
@@ -41,7 +41,7 @@ ENV OPENGROK_TOMCAT_BASE /usr/local/tomcat
 ENV CATALINA_HOME /usr/local/tomcat
 ENV CATALINA_BASE /usr/local/tomcat
 ENV CATALINA_TMPDIR /usr/local/tomcat/temp
-ENV PATH $CATALINA_HOME/bin:$PATH
+ENV PATH /depot_tools:$CATALINA_HOME/bin:$PATH
 ENV JRE_HOME /usr
 ENV CLASSPATH /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar
 ENV FREQ 7d
@@ -64,6 +64,7 @@ COPY setenv.sh $CATALINA_BASE/bin/
 
 # add our scripts
 ADD scripts/ /scripts
+ADD depot_tools/ /depot_tools
 RUN chmod -R +x /scripts
 
 # run

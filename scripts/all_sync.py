@@ -19,8 +19,8 @@ parser.add_argument('-c', '--cyclic', type=bool, default=False, help="default: f
 args = parser.parse_args()
 status = args.cyclic
 
-SRC_DIR = '/src'
-LOG_DIR = '/log'
+SRC_DIR = '/opengrok/src'
+LOG_DIR = '/opengrok/log'
 P_list = os.popen('ls %s' % SRC_DIR).read().split()
 now = lambda: datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 # memory = utils.get_available_memory()

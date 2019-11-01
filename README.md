@@ -5,6 +5,7 @@ For zhouy7x/opengrok docker image.
 ```
 mkdir -p /mnt/docker/
 git clone https://github.com/zhouy7x/opengrok-scripts.git
+git submodule update --init --recursive
 ```
 
 [build]
