@@ -13,10 +13,10 @@ import utils
 MEMSIZE = argv[1] if argv[1:] else utils.get_available_memory()
 LOCKFILE = "/var/run/opengrok-indexer"
 try:
-    PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 9090
+    PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 8080
 except Exception as e:
     print(e)
-    PORT = 9090
+    PORT = 8080
 
 
 class IndexLock(object):

@@ -22,7 +22,7 @@ Put all your repo sources into "/mnt/docker/opengrok-scripts/VOLUMNS/src/"
 
 [run]
 
-1. You can set your own tomcat port(-e "PORT=9090" & -p 9090:8080), default is 8080.
+1. You can set your own tomcat port(-p 9090:8080/tcp), default is 8080.
 2. TODO
 
     You can set your own update frequency(-e "FREQ=7d"), default is 7d
@@ -34,7 +34,7 @@ docker run -it -d \
 	-v /mnt/docker/opengrok-scripts/VOLUMNS/src/:/opengrok/src \
 	-v /mnt/docker/opengrok-scripts/VOLUMNS/data/:/opengrok/data \
 	-v /mnt/docker/opengrok-scripts/VOLUMNS/log/:/opengrok/log \
-	-e "FREQ=7d" \
+	-e FREQ="7d" \
 	-p 9090:8080/tcp \
 	test/opengrok \
 	/bin/bash

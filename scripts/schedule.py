@@ -32,11 +32,11 @@ else:
     memory = utils.get_available_memory()
 
 try:
-    PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 9090
+    PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 8080
 except Exception as e:
     print(e)
-    print("Wrong ENV PORT: must be a number(1000-65535)! set default 9090.")
-    PORT = 9090
+    print("Wrong ENV PORT: must be a number(1000-65535)! set default 8080.")
+    PORT = 8080
 
 LOCKFILE = "/tmp/opengrok-repo-sync-%s.lock" % PROJECT
 

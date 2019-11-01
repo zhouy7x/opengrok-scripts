@@ -48,6 +48,7 @@ ENV PATH /depot_tools:$CATALINA_HOME/bin:$PATH
 ENV JRE_HOME /usr
 ENV CLASSPATH /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar
 ENV FREQ 7d
+ENV PORT 8080
 ENV http_proxy http://10.239.4.80:913
 ENV https_proxy http://10.239.4.80:913
 
@@ -71,6 +72,6 @@ RUN chmod -R +x /scripts
 
 # run
 WORKDIR $CATALINA_HOME
-EXPOSE 8080
+EXPOSE $PORT
 CMD ["/scripts/start.sh"]
 
