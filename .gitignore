@@ -106,7 +106,7 @@ TAGS
 build
 dist
 coverage
-target
+
 opengrok.jar
 source.war
 prj.el
