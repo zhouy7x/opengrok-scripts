@@ -33,6 +33,9 @@ RUN apt-get install -y pkg-config autoconf build-essential && git clone https://
     apt-get remove -y autoconf build-essential && apt-get -y autoremove && apt-get -y autoclean && \
     cd /root && rm -rf /root/ctags
 
+# clone depot_tools
+RUN cd / && git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+
 # environment variables
 ENV SRC_ROOT /opengrok/src
 ENV DATA_ROOT /opengrok/data
@@ -64,7 +67,6 @@ COPY setenv.sh $CATALINA_BASE/bin/
 
 # add our scripts
 ADD scripts/ /scripts
-ADD depot_tools/ /depot_tools
 RUN chmod -R +x /scripts
 
 # run
