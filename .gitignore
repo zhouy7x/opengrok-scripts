@@ -107,8 +107,6 @@ build
 dist
 coverage
 
-opengrok.jar
-source.war
 prj.el
 nbproject/private
 plugins/LdapPlugin/nbproject/private/
