@@ -4,7 +4,7 @@ For zhouy7x/opengrok docker image.
 [clone]
 ```
 mkdir -p /mnt/docker/
-git clone https://github.com/zhouy7x/opengrok-scripts.git
+git clone https://gitlab.devtools.intel.com/zhouy7x/opengrok.git
 ```
 
 [build]
