@@ -89,9 +89,9 @@ def index(size=MEMSIZE):
     -J=-Xmx%s -J=-d64 -J=-server  \
     -a /opengrok/lib/opengrok.jar -- \
     -m 256 \
-    -s /var/opengrok/src \
-    -d /var/opengrok/data -H -P -S \
-    -W /var/opengrok/etc/configuration.xml \
+    -s /opengrok/src \
+    -d /opengrok/data -H -P -S \
+    -W /opengrok/etc/configuration.xml \
     -U http://localhost:%d/
     """ % (size, PORT)
     # code = os.system(cmd)

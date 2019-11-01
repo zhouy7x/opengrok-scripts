@@ -31,12 +31,11 @@ Put all your repo sources into "/mnt/docker/opengrok-scripts/VOLUMNS/src/"
 ```
 docker run -it -d \
 	--name=opengrok \
-	-v /mnt/docker/opengrok-scripts/VOLUMNS/src/:/src \
-	-v /mnt/docker/opengrok-scripts/VOLUMNS/data/:/data \
-	-v /mnt/docker/opengrok-scripts/VOLUMNS/log/:/log \
-	-e "PORT=9090" \
+	-v /mnt/docker/opengrok-scripts/VOLUMNS/src/:/opengrok/src \
+	-v /mnt/docker/opengrok-scripts/VOLUMNS/data/:/opengrok/data \
+	-v /mnt/docker/opengrok-scripts/VOLUMNS/log/:/opengrok/log \
 	-e "FREQ=7d" \
-	-p 9090:8080 \
+	-p 9090:8080/tcp \
 	test/opengrok \
 	/bin/bash
 docker exec -it opengrok /bin/bash
