@@ -7,6 +7,22 @@ mkdir -p /mnt/docker/
 git clone https://gitlab.devtools.intel.com/zhouy7x/opengrok.git
 ```
 
+[docker network proxy]
+```
+Reference: https://blog.frognew.com/2017/01/docker-http-proxy.html
+Add
+  EnvironmentFile=-/etc/sysconfig/docker
+to /lib/systemd/system/docker.service
+Add or modify
+  HTTP_PROXY=http://proxy.example.com:80/
+  HTTPS_PROXY=http://proxy.example.com:80/
+  NO_PROXY=localhost,127.0.0.1,internal-docker-registry.somecorporation.com
+  export HTTP_PROXY HTTPS_PROXY NO_PROXY
+to /etc/sysconfig/docker
+Enable configure
+  systemctl daemon-reload
+  systemctl restart docker
+```
 [build]
 ```
 cd /mnt/docker/opengrok-scripts/
