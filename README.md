@@ -1,5 +1,7 @@
 # opengrok-scripts
-For zhouy7x/opengrok docker image.
+For zhouy7x/opengrok docker image. 
+
+* Source url: https://github.com/oracle/opengrok.git
 
 [clone]
 ```
