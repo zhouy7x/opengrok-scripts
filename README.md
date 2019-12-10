@@ -6,14 +6,14 @@ For zhouy7x/opengrok docker image.
 [clone]
 ```
 mkdir -p /mnt/docker/
-git clone https://gitlab.devtools.intel.com/zhouy7x/opengrok.git
+cd /mnt/docker/ && git clone https://gitlab.devtools.intel.com/zhouy7x/opengrok.git
 ```
 
 [docker network proxy]
 ```
 Reference: https://blog.frognew.com/2017/01/docker-http-proxy.html
 Add
-  EnvironmentFile=-/etc/sysconfig/docker
+  EnvironmentFile=/etc/sysconfig/docker
 to /lib/systemd/system/docker.service
 Add or modify
   HTTP_PROXY=http://proxy.example.com:80/
@@ -27,24 +27,25 @@ Enable configure
 ```
 [build]
 ```
-cd /mnt/docker/opengrok-scripts/
+cd /mnt/docker/opengrok/
 docker build -t zhouy7x/opengrok .
 ```
 [prepare]
 ```
-mkdir -p /mnt/docker/opengrok-scripts/VOLUMNS/src/
-mkdir -p /mnt/docker/opengrok-scripts/VOLUMNS/data/
-mkdir -p /mnt/docker/opengrok-scripts/VOLUMNS/log/
+mkdir -p /mnt/docker/opengrok-volumes/src/
+mkdir -p /mnt/docker/opengrok-volumes/data/
+mkdir -p /mnt/docker/opengrok-volumes/log/
 ```
-Put all your repo sources into "/mnt/docker/opengrok-scripts/VOLUMNS/src/"
+Put all your repo sources into "/mnt/docker/opengrok-volumes/src/"
 
 [run]
 ```
+cd /mnt/docker/opengrok/
 docker run -it -d \
 	--name=opengrok \
-	-v /mnt/docker/opengrok-scripts/VOLUMNS/src/:/opengrok/src \
-	-v /mnt/docker/opengrok-scripts/VOLUMNS/data/:/opengrok/data \
-	-v /mnt/docker/opengrok-scripts/VOLUMNS/log/:/opengrok/log \
+	-v /mnt/docker/opengrok-scripts/VOLUMES/src/:/opengrok/src \
+	-v /mnt/docker/opengrok-scripts/VOLUMES/data/:/opengrok/data \
+	-v /mnt/docker/opengrok-scripts/VOLUMES/log/:/opengrok/log \
 	-p 9090:8080/tcp \
 	zhouy7x/opengrok
 ```
