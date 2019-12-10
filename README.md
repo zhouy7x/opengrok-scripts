@@ -58,7 +58,7 @@ a long time to first index all projects(about 6-12 hours, dependence on your dev
 
     You can set your own update frequency(-e "REINDEX=7d"), default is 7d
     ("h" means hours, "d" means days, "w" means weeks, "m" means months).
-6. If you want to restart container, you should do next steps after restart.
+6. If you want to restart container, you should do the following steps after restart.
 ```
 docker exec -it opengrok /bin/bash
 /scripts/start.sh
