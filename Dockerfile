@@ -13,7 +13,7 @@ RUN apt-get update
 RUN cp `ls -t distribution/target/*.tar.gz | head -n1 |awk '{printf("%s",$0)}'` /opengrok.tar.gz
 
 FROM tomcat:9-jre8
-LABEL maintainer "zhouy7x@gmail.com"
+LABEL maintainer="zhouy7x@gmail.com"
 
 # prepare OpenGrok binaries and directories
 COPY --from=fetcher opengrok.tar.gz /opengrok.tar.gz
@@ -24,7 +24,7 @@ RUN mkdir -p /opengrok /opengrok/etc /opengrok/data /opengrok/src && \
 # install dependencies and Python tools
 ENV http_proxy http://10.239.4.80:913
 ENV https_proxy http://10.239.4.80:913
-RUN apt-get update && apt-get install -y git subversion mercurial unzip inotify-tools python python3 python3-pip python3-venv  && \
+RUN apt-get update && apt-get install -y git subversion mercurial unzip inotify-tools python python3 python3-pip python3-venv cron && \
     python3 -m pip install /opengrok/tools/opengrok-tools*
 
 # compile and install universal-ctags
@@ -32,9 +32,6 @@ RUN apt-get install -y pkg-config autoconf build-essential && git clone https://
     cd /root/ctags && ./autogen.sh && ./configure && make && make install && \
     apt-get remove -y autoconf build-essential && apt-get -y autoremove && apt-get -y autoclean && \
     cd /root && rm -rf /root/ctags
-
-# clone depot_tools
-RUN cd / && git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 
 # environment variables
 ENV SRC_ROOT /opengrok/src
@@ -47,10 +44,12 @@ ENV CATALINA_TMPDIR /usr/local/tomcat/temp
 ENV PATH /depot_tools:$CATALINA_HOME/bin:$PATH
 ENV JRE_HOME /usr
 ENV CLASSPATH /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar
-ENV FREQ 7d
 ENV PORT 8080
 ENV http_proxy http://10.239.4.80:913
 ENV https_proxy http://10.239.4.80:913
+
+# clone depot_tools
+RUN cd / && git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git && update_depot_tools
 
 # custom deployment to / with redirect from /source
 RUN rm -rf /usr/local/tomcat/webapps/* && \
@@ -65,6 +64,9 @@ RUN sed -i -e 's/Valve/Disabled/' /usr/local/tomcat/conf/server.xml
 
 # add setenv.sh
 COPY setenv.sh $CATALINA_BASE/bin/
+
+# add crontab config file
+COPY root /var/spool/cron/crontabs/root
 
 # add our scripts
 ADD scripts/ /scripts

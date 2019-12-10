@@ -3,7 +3,7 @@
 LOCKFILE=/var/run/opengrok-indexer
 URI="http://localhost:8080"
 # $OPS can be overwritten by environment variable
-OPS=${INDEXER_FLAGS:='-H -P -S -G'}
+OPS=${INDEXER_FLAGS:='-H -P -S'}
 
 if [ -f "$LOCKFILE" ]; then
 	date +"%F %T Indexer still locked, skipping indexing"
