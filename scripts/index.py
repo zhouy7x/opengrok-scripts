@@ -48,20 +48,20 @@ class IndexLock(object):
             f.close()
         except Exception as e:
             print(e)
-            print("create lock failed.")
+            print("ERROR: create lock failed.")
         else:
-            print("create lock successfully.")
+            print("MESSAGE: create lock successfully.")
         self.__lock = self.check()
 
     def __delete_lock_file(self):
         os.remove(self.__lockfile)
-        print("delete lock successfully.")
+        print("MESSAGE: delete lock successfully.")
 
     def lock(self, foo):
         def __inside__(*args, **kwargs):
             if self._lock:
                 print(datetime.datetime.now().strftime(
-                    '%Y-%m-%d %H:%M:%S') + "  Indexer still locked, skipping indexing..")
+                    '%Y-%m-%d %H:%M:%S') + "  Indexer still locked, skipping index!")
                 return 1
             else:
                 self._lock = True
@@ -83,7 +83,7 @@ class IndexLock(object):
 @IndexLock()
 def index(size=MEMSIZE):
     print("Available memory size: %s " % size)
-    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ":  Indexing starting.")
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "  Indexing starting.")
     cmd = """
     opengrok-indexer -J=-Djava.util.logging.config.file=/opengrok/doc/logging.properties \
     -J=-Xmx%s -J=-d64 -J=-server  \
@@ -98,7 +98,7 @@ def index(size=MEMSIZE):
     code = os.popen(cmd).read()
     print(code)
     # code = size
-    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ":  Indexing finished.")
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "  Indexing finished.")
     return code
 
 

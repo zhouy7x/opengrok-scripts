@@ -13,8 +13,19 @@ indexer(){
 	date +"%F %T Startup finished"
 
 	if [[ ! -d /opengrok/data/index ]]; then
+		# Populate the webapp with bare configuration.
+		BODY_INCLUDE_FILE="/opengrok/data/body_include"
+		if [[ -f $BODY_INCLUDE_FILE ]]; then
+			mv "$BODY_INCLUDE_FILE" "$BODY_INCLUDE_FILE.orig"
+		fi
+		echo '<p><h1>Waiting on the initial reindex to finish.. Stay tuned !</h1></p>' > "$BODY_INCLUDE_FILE"
+		/scripts/index.sh --noIndex
+		rm -f "$BODY_INCLUDE_FILE"
+		if [[ -f $BODY_INCLUDE_FILE.orig ]]; then
+			mv "$BODY_INCLUDE_FILE.orig" "$BODY_INCLUDE_FILE"
+		fi
+
 		# Perform initial indexing.
-		# NOMIRROR=1 /scripts/index.sh
 		/scripts/index.py
 		date +"%F %T Initial reindex finished"
 	fi
@@ -22,4 +33,4 @@ indexer(){
 
 # Start all necessary services.
 indexer &
-catalina.sh run
+startup.sh

@@ -34,7 +34,7 @@ docker build -t zhouy7x/opengrok .
 ```
 mkdir -p /mnt/docker/opengrok-volumes/src/
 mkdir -p /mnt/docker/opengrok-volumes/data/
-mkdir -p /mnt/docker/opengrok-volumes/log/
+mkdir -p /mnt/docker/opengrok-volumes/logs/
 ```
 Put all your repo sources into "/mnt/docker/opengrok-volumes/src/"
 
@@ -45,11 +45,11 @@ docker run -it -d \
 	--name=opengrok \
 	-v /mnt/docker/opengrok-scripts/VOLUMES/src/:/opengrok/src \
 	-v /mnt/docker/opengrok-scripts/VOLUMES/data/:/opengrok/data \
-	-v /mnt/docker/opengrok-scripts/VOLUMES/log/:/opengrok/log \
-	-p 9090:8080/tcp \
+	-v /mnt/docker/opengrok-scripts/VOLUMES/logs/:/opengrok/logs \
+	-p 8080:8080/tcp \
 	zhouy7x/opengrok
 ```
-1. You can set your own tomcat port(-p 9090:8080/tcp), default is 8080.
+1. You can set your own tomcat port(-p <your_port>:8080/tcp), default is 8080.
 2. Now can auto index and update all projects.
 3. If your projects are too large(such as chromium and chromiumos), It maybe needs
 a long time to first index all projects(about 6-12 hours, dependence on your device performance).
