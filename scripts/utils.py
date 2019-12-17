@@ -8,15 +8,6 @@ import sys
 import subprocess
 import signal
 
-config = None
-RepoPath = None
-BenchmarkPath = None
-DriverPath = None
-Timeout = 15*60
-PythonName = None
-Includes = None
-Excludes = None
-
 
 class FolderChanger:
     def __init__(self, folder):
@@ -37,9 +28,10 @@ def chdir(folder):
 def check_folder(foo):
     def _inside(folder):
         if os.path.exists(folder):
-            #print("Folder '%s' already exists! Exit." % folder)
+            # print("Folder '%s' already exists! Exit." % folder)
             return
         foo(folder)
+
     return _inside
 
 
@@ -73,12 +65,6 @@ def Shell(string):
     return status, output
 
 
-def config_get_default(section, name, default=None):
-    if config.has_option(section, name):
-        return config.get(section, name)
-    return default
-
-
 class TimeException(Exception):
     pass
 
@@ -98,22 +84,20 @@ class Handler:
 
     def __exit__(self, type, value, traceback):
         signal.signal(self.signum, self.old)
-        
-    
+
+
 def RunTimedCheckOutput(args, env=os.environ.copy(), timeout=None, **popenargs):
-    if timeout is None:
-        timeout = Timeout
     if type(args) == list:
-        print('Running: "'+ '" "'.join(args) + '" with timeout: ' + str(timeout)+'s')
+        print('Running: "' + '" "'.join(args) + '" with timeout: ' + str(timeout) + 's')
     elif type(args) == str:
-        print('Running: "'+ args + '" with timeout: ' + str(timeout) + 's')
+        print('Running: "' + args + '" with timeout: ' + str(timeout) + 's')
     else:
         print('Running: ' + args)
     try:
         if type(args) == list:
             print("list......................")
-            p = subprocess.Popen(args, bufsize=-1,  env=env, close_fds=True, preexec_fn=os.setsid, 
-                    stdout=subprocess.PIPE, **popenargs)
+            p = subprocess.Popen(args, bufsize=-1, env=env, close_fds=True, preexec_fn=os.setsid,
+                                 stdout=subprocess.PIPE, **popenargs)
 
             with Handler(signal.SIGALRM, timeout_handler):
                 try:
@@ -128,15 +112,15 @@ def RunTimedCheckOutput(args, env=os.environ.copy(), timeout=None, **popenargs):
                     # p.kill()
                     os.killpg(p.pid, signal.SIGINT)
                     # in case someone looks at the logs...
-                    print ("WARNING: Timed Out 1st.")
+                    print("WARNING: Timed Out 1st.")
                     # try to get any partial output
                     output = p.communicate()[0]
-                    print ('output 1st =', output)
+                    print('output 1st =', output)
 
                     # try again.
                     p = subprocess.Popen(args, bufsize=-1, shell=True, env=env, close_fds=True,
-                                             preexec_fn=os.setsid,
-                                             stdout=subprocess.PIPE, **popenargs)
+                                         preexec_fn=os.setsid,
+                                         stdout=subprocess.PIPE, **popenargs)
                     try:
                         signal.alarm(timeout)
                         output = p.communicate()[0]
@@ -149,15 +133,14 @@ def RunTimedCheckOutput(args, env=os.environ.copy(), timeout=None, **popenargs):
                         # p.kill()
                         os.killpg(p.pid, signal.SIGINT)
                         # in case someone looks at the logs...
-                        print ("WARNING: Timed Out 2nd.")
+                        print("WARNING: Timed Out 2nd.")
                         # try to get any partial output
                         output = p.communicate()[0]
 
         else:
             # import subprocess32
             p = subprocess.Popen(args, bufsize=-1, shell=True, env=env, close_fds=True, preexec_fn=os.setsid,
-                    stdout=subprocess.PIPE, **popenargs)
-            #with Handler(signal.SIGALRM, timeout_handler):
+                                 stdout=subprocess.PIPE, **popenargs)
             try:
                 output = p.communicate(timeout=timeout)[0]
                 # if we get an alarm right here, nothing too bad should happen
@@ -168,14 +151,14 @@ def RunTimedCheckOutput(args, env=os.environ.copy(), timeout=None, **popenargs):
                 # p.kill()
                 os.killpg(p.pid, signal.SIGINT)
                 # in case someone looks at the logs...
-                print ("WARNING: Timed Out 1st.")
+                print("WARNING: Timed Out 1st.")
                 # try to get any partial output
                 output = p.communicate()[0]
-                print ('output 1st =',output)
+                print('output 1st =', output)
 
                 # try again.
                 p = subprocess.Popen(args, bufsize=-1, shell=True, env=env, close_fds=True, preexec_fn=os.setsid,
-                            stdout=subprocess.PIPE, **popenargs)
+                                     stdout=subprocess.PIPE, **popenargs)
                 try:
                     output = p.communicate(timeout=timeout)[0]
                     # if we get an alarm right here, nothing too bad should happen
@@ -186,11 +169,11 @@ def RunTimedCheckOutput(args, env=os.environ.copy(), timeout=None, **popenargs):
                     # p.kill()
                     os.killpg(p.pid, signal.SIGINT)
                     # in case someone looks at the logs...
-                    print ("WARNING: Timed Out 2nd.")
+                    print("WARNING: Timed Out 2nd.")
                     # try to get any partial output
                     output = p.communicate()[0]
 
-        print ('output final =', output)
+        print('output final =', output)
         return output
     except Exception as e:
         pass

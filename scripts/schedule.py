@@ -64,14 +64,11 @@ def check_update():
     with utils.chdir(folder):
         if PROJECT in ["chromeos"]:
             shell = "/depot_tools/repo sync"
-            stat, ret = utils.Shell(shell)
-            print(1, stat)
+            utils.RunTimedCheckOutput(shell)
 
         else:
             cmd = "/usr/local/bin/opengrok-mirror -U 'http://localhost:%d/' -I %s" % (PORT, PROJECT)
-            stat, ret = utils.Shell(cmd)
-            # ret = os.popen(cmd).read()
-            print(2, stat)
+            utils.RunTimedCheckOutput(cmd)
 
             if PROJECT in ["chromium", "v8"]:
                 if PROJECT == "chromium":
@@ -80,8 +77,7 @@ def check_update():
                     os.chdir(folder + '/v8')
 
                 cmd2 = "/depot_tools/gclient sync -D -f"
-                stat, ret = utils.Shell(cmd2)
-                print(3, stat)
+                utils.RunTimedCheckOutput(cmd2)
 
 
 def create_lock(lock_file):
