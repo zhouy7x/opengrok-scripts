@@ -47,6 +47,9 @@ ENV CLASSPATH /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-j
 ENV PORT 8080
 ENV http_proxy http://10.239.4.80:913
 ENV https_proxy http://10.239.4.80:913
+ENV NO_AUTH_BOTO_CONFIG /opengrok/.boto
+ENV MIRROR 1
+
 
 # clone depot_tools
 RUN cd / && git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git && update_depot_tools
@@ -64,6 +67,7 @@ RUN sed -i -e 's/Valve/Disabled/' /usr/local/tomcat/conf/server.xml
 
 # add setenv.sh
 COPY setenv.sh $CATALINA_BASE/bin/
+COPY .boto /opengrok/.boto
 
 # add crontab config file
 COPY root /var/spool/cron/crontabs/root

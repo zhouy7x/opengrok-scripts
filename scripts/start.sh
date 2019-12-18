@@ -22,7 +22,7 @@ indexer(){
 		fi
 
 		# Perform initial indexing.
-		/scripts/index.py
+		MIRROR=0 /scripts/index.py
 		date +"%F %T Initial reindex finished"
 	#fi
 }

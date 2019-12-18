@@ -1,2 +1,2 @@
 # m h  dom mon dow   command
-0  3  *    *   6    /usr/bin/python3 /scripts/all_sync.py >> /log/all_sync.log 2>&1 &
+0  3  *    *   6    /usr/bin/python3 /scripts/index.py >> /log/index.log 2>&1 &
