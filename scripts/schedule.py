@@ -33,7 +33,7 @@ else:
 
 try:
     PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 8080
-except Exception as e:
+except ValueError as e:
     print(e)
     print("Wrong ENV PORT: must be a number(1000-65535)! set default 8080.")
     PORT = 8080

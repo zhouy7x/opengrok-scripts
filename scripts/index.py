@@ -9,16 +9,18 @@ import datetime
 from sys import argv
 import utils
 
-MIRROR = os.environ.get("MIRROR")
 SRC_ROOT = os.environ.get("SRC_ROOT")
 MEMSIZE = argv[1] if argv[1:] else utils.get_available_memory()
 LOCKFILE = "/var/run/opengrok-indexer"
 now = lambda: datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 try:
     PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 8080
-except Exception as e:
-    print(e)
+except ValueError as e:
     PORT = 8080
+try:
+    MIRROR = int(os.environ.get("MIRROR")) if os.environ.get("MIRROR") else 1
+except ValueError as e:
+    MIRROR = 1
 
 
 class IndexPrepare(object):
@@ -77,6 +79,7 @@ class IndexPrepare(object):
     def __call__(self, foo):
         @self.lock
         def __inside__(*args, **kwargs):
+            print("self.mirror:", self.mirror)
             if self.mirror:
                 print(now() + "  Mirroring starting!")
                 self.create_mirror()
