@@ -79,7 +79,6 @@ class IndexPrepare(object):
     def __call__(self, foo):
         @self.lock
         def __inside__(*args, **kwargs):
-            print("self.mirror:", self.mirror)
             if self.mirror:
                 print(now() + "  Mirroring starting!")
                 self.create_mirror()
