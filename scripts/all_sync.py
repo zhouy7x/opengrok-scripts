@@ -13,37 +13,36 @@ import utils
 import argparse
 
 
-parser = argparse.ArgumentParser(description='manual to this script')
-parser.add_argument('-c', '--cyclic', type=bool, default=False, help="default: false")
-
-args = parser.parse_args()
-status = args.cyclic
-
-SRC_DIR = '/opengrok/src'
+SRC_ROOT = os.environ.get("SRC_ROOT")
 LOG_DIR = '/opengrok/log'
-P_list = os.popen('ls %s' % SRC_DIR).read().split()
+MARK_DIR = "/tmp/project-mark"
+P_list = os.popen('ls %s' % SRC_ROOT).read().split()
 now = lambda: datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-# memory = utils.get_available_memory()
 
 
-def run(p_list, name):
+def run(p_list, name, reindex=False):
     with utils.chdir(sys.path[0]):
-        for project in p_list:
-            memory = utils.get_available_memory()
-            log_dir = "%s/%s" % (LOG_DIR, project)
+        if reindex:
+            log_dir = os.path.join(LOG_DIR, 'index')
             utils.mkdir(log_dir)
-            cmd = "python3 schedule.py -m %s -p %s > %s/schedule-%s.log 2>&1" % (memory, project, log_dir, name)
+            cmd = "/usr/bin/python3 /scripts/index.py >> %s/index-%s.log 2>&1" % (log_dir, name)
             stat, ret = utils.Shell(cmd)
             print("stat:", stat)
+        else:
+            for project in p_list:
+                memory = utils.get_available_memory()
+                log_dir = os.path.join(LOG_DIR, project)
+                utils.mkdir(log_dir)
+                cmd = "python3 schedule.py -m %s -p %s > %s/schedule-%s.log 2>&1" % (memory, project, log_dir, name)
+                stat, ret = utils.Shell(cmd)
+                print("stat:", stat)
 
 
 if __name__ == '__main__':
-    while True:
-        print(">>>>>> Start time:", datetime.datetime.now())
-        run(P_list, now())
-        print("<<<<<< Stop time:", datetime.datetime.now())
-        if not status:
-            break
-        else:
-            print('sleep 15 mins...')
-            time.sleep(15*60)
+    print(">>>>>> Start time:", now())
+    REINDEX = False
+    if utils.check_mark(MARK_DIR, P_list):
+        REINDEX = True
+    run(P_list, now(), REINDEX)
+    print("<<<<<< Stop time:", now())
+

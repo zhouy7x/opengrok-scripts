@@ -197,3 +197,15 @@ def get_available_memory():
         free_mem_final = str(int(free_mem * 0.8)) + kw
     print(free_mem_final)
     return free_mem_final
+
+
+def check_mark(dir, names):
+    symbol = 0
+    if not os.path.exists(dir):
+        mkdir(dir)
+    for name in names:
+        if not os.path.exists(os.path.join(dir, name)):
+            symbol = 1
+            with open(os.path.join(dir, name), 'w'):
+                pass
+    return symbol

@@ -12,6 +12,7 @@ import utils
 SRC_ROOT = os.environ.get("SRC_ROOT")
 MEMSIZE = argv[1] if argv[1:] else utils.get_available_memory()
 LOCKFILE = "/var/run/opengrok-indexer"
+MARK_DIR = "/tmp/project-mark"
 now = lambda: datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 try:
     PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 8080
@@ -24,12 +25,14 @@ except ValueError as e:
 
 
 class IndexPrepare(object):
-    def __init__(self, lockfile=LOCKFILE, src_root=SRC_ROOT, port=PORT, mirror=MIRROR):
+    def __init__(self, lockfile=LOCKFILE, src_root=SRC_ROOT, port=PORT, mirror=MIRROR, mark=MARK_DIR):
         self.__lockfile = lockfile
         self.__lock_exist = None
         self.src_root = src_root
         self.port = port
         self.mirror = mirror
+        self.mark = mark
+        self.projects = os.popen('ls %s' % self.src_root).read().split()
 
     def check(self):
         return os.path.exists(self.__lockfile)
@@ -83,14 +86,15 @@ class IndexPrepare(object):
                 print(now() + "  Mirroring starting!")
                 self.create_mirror()
                 print(now() + "  Mirroring finished!")
+            # mark names of all projects.
+            utils.check_mark(self.mark, self.projects)
             return foo(*args, **kwargs)
         return __inside__
 
     def create_mirror(self):
         cmd1 = "/usr/local/bin/opengrok-mirror --all --uri http://localhost:%d/" % self.port
         utils.Shell(cmd1)
-        P_list = os.popen('ls %s' % self.src_root).read().split()
-        for p in P_list:
+        for p in self.projects:
             folder = os.path.join(self.src_root, p)
             with utils.chdir(folder):
                 if p.lower() in ["chromeos", "chromiumos"]:
@@ -106,7 +110,7 @@ class IndexPrepare(object):
                     utils.Shell(cmd2)
 
 
-@IndexPrepare(LOCKFILE, SRC_ROOT, PORT, MIRROR)
+@IndexPrepare(LOCKFILE, SRC_ROOT, PORT, MIRROR, MARK_DIR)
 def index(size=MEMSIZE):
     print("Available memory size: %s " % size)
     print(now() + "  Indexing starting.")
