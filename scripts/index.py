@@ -87,6 +87,7 @@ class IndexPrepare(object):
                 self.create_mirror()
                 print(now() + "  Mirroring finished!")
             # mark names of all projects.
+            os.system('rm -rf %s' % self.mark)
             utils.check_mark(self.mark, self.projects)
             return foo(*args, **kwargs)
         return __inside__
