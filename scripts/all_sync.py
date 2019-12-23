@@ -6,12 +6,8 @@
 """
 import os
 import sys
-import time
 import datetime
-
 import utils
-import argparse
-
 
 SRC_ROOT = os.environ.get("SRC_ROOT")
 LOG_DIR = '/opengrok/log'
