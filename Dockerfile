@@ -24,7 +24,7 @@ RUN mkdir -p /opengrok /opengrok/etc /opengrok/data /opengrok/src && \
 # install dependencies and Python tools
 ENV http_proxy http://10.239.4.80:913
 ENV https_proxy http://10.239.4.80:913
-RUN apt-get update && apt-get install -y git subversion mercurial unzip inotify-tools python python3 python3-pip python3-venv cron && \
+RUN apt-get update && apt-get install -y git subversion mercurial unzip inotify-tools python python3 python3-pip python3-venv cron locales && \
     python3 -m pip install /opengrok/tools/opengrok-tools*
 
 # compile and install universal-ctags
@@ -50,6 +50,8 @@ ENV https_proxy http://10.239.4.80:913
 ENV NO_AUTH_BOTO_CONFIG /opengrok/.boto
 ENV MIRROR 1
 
+# set the locale
+RUN locale-gen en_US.UTF-8
 
 # clone depot_tools
 RUN cd / && git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git && update_depot_tools
