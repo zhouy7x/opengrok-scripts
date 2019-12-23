@@ -49,6 +49,7 @@ ENV http_proxy http://10.239.4.80:913
 ENV https_proxy http://10.239.4.80:913
 ENV NO_AUTH_BOTO_CONFIG /opengrok/.boto
 ENV MIRROR 1
+ENV DEBIAN_FRONTEND noninteractive
 
 # set the locale
 RUN locale-gen en_US.UTF-8
