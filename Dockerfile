@@ -24,7 +24,7 @@ RUN mkdir -p /opengrok /opengrok/etc /opengrok/data /opengrok/src && \
 # install dependencies and Python tools
 ENV http_proxy http://10.239.4.80:913
 ENV https_proxy http://10.239.4.80:913
-RUN apt-get update && apt-get install -y git subversion mercurial unzip inotify-tools python python3 python3-pip python3-venv cron locales procps && \
+RUN apt-get update && apt-get install -y git subversion mercurial unzip inotify-tools python python3 python3-pip python3-venv vim cron locales procps && \
     python3 -m pip install /opengrok/tools/opengrok-tools*
 
 # compile and install universal-ctags
