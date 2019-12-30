@@ -5,6 +5,7 @@
 @time: 2019/05/08
 """
 import datetime
+import json
 import os
 import argparse
 import utils
@@ -12,6 +13,11 @@ import utils
 
 SRC_DIR = '/opengrok/src'
 P_list = os.popen('ls %s' % SRC_DIR).read().split()
+env_path = '/scripts/env.json'
+ENV = None
+if os.path.exists(env_path):
+    with open(env_path) as f:
+        ENV = json.loads(f.read())
 
 
 def usage():
@@ -62,22 +68,22 @@ now = lambda: datetime.datetime.now()
 def check_update():
     folder = SRC_DIR + "/" + PROJECT
     with utils.chdir(folder):
-        if PROJECT in ["chromeos"]:
+        if PROJECT in ["chromeos", "chromiumos"]:
             shell = "/depot_tools/repo sync"
-            utils.RunTimedCheckOutput(shell)
+            utils.RunTimedCheckOutput(shell, env=ENV)
 
         else:
             cmd = "/usr/local/bin/opengrok-mirror -U 'http://localhost:%d/' -I %s" % (PORT, PROJECT)
-            utils.RunTimedCheckOutput(cmd)
+            utils.RunTimedCheckOutput(cmd, env=ENV)
 
-            if PROJECT in ["chromium", "v8"]:
-                if PROJECT == "chromium":
+            if PROJECT in ["chromium", "v8", "chrome"]:
+                if PROJECT in ["chromium", "chrome"]:
                     os.chdir(folder + '/src')
                 elif PROJECT == "v8":
                     os.chdir(folder + '/v8')
 
                 cmd2 = "/depot_tools/gclient sync -D -f"
-                utils.RunTimedCheckOutput(cmd2)
+                utils.RunTimedCheckOutput(cmd2, env=ENV)
 
 
 def create_lock(lock_file):
@@ -107,7 +113,7 @@ def run_update():
         -U 'http://localhost:%d/' \
         -H %s
     """ % (memory, PROJECT, PROJECT, PORT, PORT, PROJECT)
-    return os.system(cmd)
+    utils.RunTimedCheckOutput(cmd, env=ENV)
 
 
 def main():
@@ -117,12 +123,7 @@ def main():
     print("DEBUG: Now create opengrok mirror...")
     check_update()
     print("DEBUG: Now run repo sync...")
-    if run_update():
-        print("repo-sync: Update %s failed!" % PROJECT)
-    #     return 2
-    else:
-        print("repo-sync: Update %s successfully." % PROJECT)
-    #     return 0
+    run_update()
     remove_lock()
 
 

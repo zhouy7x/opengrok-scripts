@@ -4,6 +4,7 @@
 @author:lhj
 @time: 2018/12/17
 """
+import json
 import os
 import datetime
 from sys import argv
@@ -14,6 +15,13 @@ MEMSIZE = argv[1] if argv[1:] else utils.get_available_memory()
 LOCKFILE = "/var/run/opengrok-indexer"
 MARK_DIR = "/tmp/project-mark"
 now = lambda: datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+env_path = '/scripts/env.json'
+ENV = None
+if os.path.exists(env_path):
+    with open(env_path) as f:
+        ENV = json.loads(f.read())
+
 try:
     PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 8080
 except ValueError as e:
@@ -86,6 +94,9 @@ class IndexPrepare(object):
                 print(now() + "  Mirroring starting!")
                 self.create_mirror()
                 print(now() + "  Mirroring finished!")
+            else:
+                with open(env_path, 'w') as f:
+                    f.write(json.dumps(os.environ.copy()))
             # mark names of all projects.
             os.system('rm -rf %s' % self.mark)
             utils.check_mark(self.mark, self.projects)
@@ -94,21 +105,21 @@ class IndexPrepare(object):
 
     def create_mirror(self):
         cmd1 = "/usr/local/bin/opengrok-mirror --all --uri http://localhost:%d/" % self.port
-        utils.RunTimedCheckOutput(cmd1)
+        utils.RunTimedCheckOutput(cmd1, env=ENV)
         for p in self.projects:
             folder = os.path.join(self.src_root, p)
             with utils.chdir(folder):
                 if p.lower() in ["chromeos", "chromiumos"]:
                     shell = "/depot_tools/repo sync"
-                    utils.RunTimedCheckOutput(shell)
-                elif p.lower() in ["chromium", "v8"]:
-                    if p.lower() == "chromium":
+                    utils.RunTimedCheckOutput(shell, env=ENV)
+                elif p.lower() in ["chromium", "v8", "chrome"]:
+                    if p.lower() in ["chromium", "chrome"]:
                         os.chdir(os.path.join(folder, 'src'))
                     elif p.lower() == "v8":
                         os.chdir(os.path.join(folder, 'v8'))
 
                     cmd2 = "/depot_tools/gclient sync -D -f"
-                    utils.RunTimedCheckOutput(cmd2)
+                    utils.RunTimedCheckOutput(cmd2, env=ENV)
 
 
 @IndexPrepare(LOCKFILE, SRC_ROOT, PORT, MIRROR, MARK_DIR)
@@ -125,7 +136,7 @@ def index(size=MEMSIZE):
     -W /opengrok/etc/configuration.xml \
     -U http://localhost:%d/
     """ % (size, PORT)
-    utils.RunTimedCheckOutput(cmd)
+    utils.RunTimedCheckOutput(cmd, env=ENV)
     print(now() + "  Indexing finished.")
 
 
