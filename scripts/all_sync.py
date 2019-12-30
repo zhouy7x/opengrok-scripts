@@ -41,4 +41,6 @@ if __name__ == '__main__':
         REINDEX = True
     run(P_list, now(), REINDEX)
     print("<<<<<< Stop time:", now())
+    print('\n\n\n')
+
 

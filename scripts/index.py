@@ -94,13 +94,13 @@ class IndexPrepare(object):
 
     def create_mirror(self):
         cmd1 = "/usr/local/bin/opengrok-mirror --all --uri http://localhost:%d/" % self.port
-        utils.Shell(cmd1)
+        utils.RunTimedCheckOutput(cmd1)
         for p in self.projects:
             folder = os.path.join(self.src_root, p)
             with utils.chdir(folder):
                 if p.lower() in ["chromeos", "chromiumos"]:
                     shell = "/depot_tools/repo sync"
-                    utils.Shell(shell)
+                    utils.RunTimedCheckOutput(shell)
                 elif p.lower() in ["chromium", "v8"]:
                     if p.lower() == "chromium":
                         os.chdir(os.path.join(folder, 'src'))
@@ -108,7 +108,7 @@ class IndexPrepare(object):
                         os.chdir(os.path.join(folder, 'v8'))
 
                     cmd2 = "/depot_tools/gclient sync -D -f"
-                    utils.Shell(cmd2)
+                    utils.RunTimedCheckOutput(cmd2)
 
 
 @IndexPrepare(LOCKFILE, SRC_ROOT, PORT, MIRROR, MARK_DIR)
@@ -125,7 +125,7 @@ def index(size=MEMSIZE):
     -W /opengrok/etc/configuration.xml \
     -U http://localhost:%d/
     """ % (size, PORT)
-    utils.Shell(cmd)
+    utils.RunTimedCheckOutput(cmd)
     print(now() + "  Indexing finished.")
 
 
