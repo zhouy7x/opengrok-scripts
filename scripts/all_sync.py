@@ -4,16 +4,9 @@
 @author:lhj
 @time: 201905/13
 """
-import os
 import sys
-import datetime
 import utils
-
-SRC_ROOT = os.environ.get("SRC_ROOT")
-LOG_DIR = '/opengrok/log'
-MARK_DIR = "/tmp/project-mark"
-P_list = os.popen('ls %s' % SRC_ROOT).read().split()
-now = lambda: datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+from env import *
 
 
 def run(p_list, name, reindex=False):
@@ -39,7 +32,7 @@ if __name__ == '__main__':
     REINDEX = False
     if utils.check_mark(MARK_DIR, P_list):
         REINDEX = True
-    run(P_list, now(), REINDEX)
+    run(P_list, timezone(), REINDEX)
     print("<<<<<< Stop time:", now())
     print('\n\n\n')
 

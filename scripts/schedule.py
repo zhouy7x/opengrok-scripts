@@ -1,34 +1,25 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 """
+          Real time update of opengrok
+-------------------------------------------------
 @author:lhj
 @time: 2019/05/08
+1. 运行上锁
+2. 检查更新
+3. 更新的话，先mirror， 后reindex；
 """
-import datetime
-import json
-import os
+
 import argparse
 import utils
-
-
-SRC_DIR = '/opengrok/src'
-P_list = os.popen('ls %s' % SRC_DIR).read().split()
-env_path = '/scripts/env.json'
-ENV = None
-if os.path.exists(env_path):
-    with open(env_path) as f:
-        ENV = json.loads(f.read())
-
-
-def usage():
-    print(parser.format_usage())
+from env import *
 
 
 parser = argparse.ArgumentParser(description='manual to this script')
 parser.add_argument('-p', '--project', type=str, choices=P_list)
 parser.add_argument('-m', '--mem-size', type=str, default=None,
                     help="memory size, like: 10g, 100m, ... ")
-
+usage = lambda: print(parser.format_usage())
 args = parser.parse_args()
 PROJECT = args.project
 MEMSIZE = args.mem_size
@@ -36,13 +27,6 @@ if MEMSIZE:
     memory = MEMSIZE
 else:
     memory = utils.get_available_memory()
-
-try:
-    PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 8080
-except ValueError as e:
-    print(e)
-    print("Wrong ENV PORT: must be a number(1000-65535)! set default 8080.")
-    PORT = 8080
 
 LOCKFILE = "/tmp/opengrok-repo-sync-%s.lock" % PROJECT
 
@@ -55,18 +39,9 @@ else:
     print("PORT = %s" % PORT)
     status = True
 
-now = lambda: datetime.datetime.now()
-"""
-          Real time update of opengrok
--------------------------------------------------
-1. 运行上锁
-2. 检查更新
-3. 更新的话，先mirror， 后reindex；
-"""
-
 
 def check_update():
-    folder = SRC_DIR + "/" + PROJECT
+    folder = SRC_ROOT + "/" + PROJECT
     with utils.chdir(folder):
         if PROJECT in ["chromeos", "chromiumos"]:
             shell = "/depot_tools/repo sync"

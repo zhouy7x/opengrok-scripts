@@ -4,32 +4,12 @@
 @author:lhj
 @time: 2018/12/17
 """
-import json
-import os
-import datetime
 from sys import argv
 import utils
+from env import *
 
-SRC_ROOT = os.environ.get("SRC_ROOT")
-MEMSIZE = argv[1] if argv[1:] else utils.get_available_memory()
 LOCKFILE = "/var/run/opengrok-indexer"
-MARK_DIR = "/tmp/project-mark"
-now = lambda: datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-env_path = '/scripts/env.json'
-ENV = None
-if os.path.exists(env_path):
-    with open(env_path) as f:
-        ENV = json.loads(f.read())
-
-try:
-    PORT = int(os.environ.get("PORT")) if os.environ.get("PORT") else 8080
-except ValueError as e:
-    PORT = 8080
-try:
-    MIRROR = int(os.environ.get("MIRROR")) if os.environ.get("MIRROR") else 1
-except ValueError as e:
-    MIRROR = 1
+MEMSIZE = argv[1] if argv[1:] else utils.get_available_memory()
 
 
 class IndexPrepare(object):
@@ -123,7 +103,7 @@ class IndexPrepare(object):
 
 
 @IndexPrepare(LOCKFILE, SRC_ROOT, PORT, MIRROR, MARK_DIR)
-def index(size=MEMSIZE):
+def index(size=MEMSIZE, env=ENV):
     print("Available memory size: %s " % size)
     print(now() + "  Indexing starting.")
     cmd = """
@@ -136,10 +116,12 @@ def index(size=MEMSIZE):
     -W /opengrok/etc/configuration.xml \
     -U http://localhost:%d/
     """ % (size, PORT)
-    utils.RunTimedCheckOutput(cmd, env=ENV)
+    if not env:
+        env = os.environ.copy()
+    utils.RunTimedCheckOutput(cmd, env=env)
     print(now() + "  Indexing finished.")
 
 
 if __name__ == '__main__':
-    index(MEMSIZE)
+    index(MEMSIZE, ENV)
     print('\n\n\n')
