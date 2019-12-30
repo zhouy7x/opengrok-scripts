@@ -14,7 +14,7 @@ def run(p_list, name, reindex=False):
         if reindex:
             log_dir = os.path.join(LOG_DIR, 'index')
             utils.mkdir(log_dir)
-            cmd = "/usr/bin/python3 /scripts/index.py >> %s/index-%s.log 2>&1" % (log_dir, name)
+            cmd = "MIRROR=1 python3 index.py >> %s/index-%s.log 2>&1" % (log_dir, name)
             stat, ret = utils.Shell(cmd)
             print("stat:", stat)
         else:
