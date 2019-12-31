@@ -11,7 +11,7 @@ if os.path.exists(env_path):
 else:
     ENV = os.environ.copy()
 SRC_ROOT = '/opengrok/src'
-LOG_DIR = '/opengrok/log'
+LOG_DIR = '/opengrok/logs'
 MARK_DIR = "/tmp/project-mark"
 P_list = os.popen('ls %s' % SRC_ROOT).read().split()
 timezone = lambda: datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
