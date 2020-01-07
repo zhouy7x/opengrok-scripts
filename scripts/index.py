@@ -118,7 +118,13 @@ def index(size=MEMSIZE, env=ENV):
     """ % (size, PORT)
     if not env:
         env = os.environ.copy()
-    utils.RunTimedCheckOutput(cmd, env=env)
+    # utils.RunTimedCheckOutput(cmd, env=env)
+    fullcmd = cmd.split()
+    utils.RunShellWithEnv(cmd, env=env)
+    # delayed = subprocess.Popen(fullcmd, env=env, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+    # # subprocess.Popen(['sed', '-e', 's/^/' + name + ': /'], stdin=delayed.stdout)
+    # subprocess.Popen(['sed', '-e', 's/^//'], stdin=delayed.stdout)
+    # delayed.communicate()
     print(now() + "  Indexing finished.")
 
 

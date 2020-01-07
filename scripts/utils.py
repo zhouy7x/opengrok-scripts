@@ -118,7 +118,7 @@ def RunTimedCheckOutput(args, env=os.environ.copy(), timeout=None, **popenargs):
                     print('output 1st =', output)
 
                     # try again.
-                    p = subprocess.Popen(args, bufsize=-1, shell=True, env=env, close_fds=True,
+                    p = subprocess.Popen(args, bufsize=-1, env=env, close_fds=True,
                                          preexec_fn=os.setsid,
                                          stdout=subprocess.PIPE, **popenargs)
                     try:
@@ -209,3 +209,8 @@ def check_mark(dir, names):
             with open(os.path.join(dir, name), 'w'):
                 pass
     return symbol
+
+
+def RunShellWithEnv(string, env=os.environ.copy()):
+    delayed = subprocess.Popen(string, shell=True, env=env, stderr=subprocess.STDOUT)
+    delayed.communicate()
