@@ -30,5 +30,7 @@ indexer(){
 # Start all necessary services.
 /etc/init.d/cron start
 crontab -l
-startup.sh
-indexer
+indexer &
+#startup.sh
+catalina.sh run
+
