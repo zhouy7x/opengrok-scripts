@@ -60,6 +60,5 @@ a long time to first index all projects(about 6-12 hours, dependence on your dev
     ("h" means hours, "d" means days, "w" means weeks, "m" means months).
 6. If you want to restart container, you should do the following steps after restart.
 ```
-docker exec -it opengrok /bin/bash
-/scripts/start.sh
+docker start opengork
 ```

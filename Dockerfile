@@ -78,6 +78,6 @@ RUN chmod -R +x /scripts
 
 # run
 WORKDIR $CATALINA_HOME
+ENTRYPOINT ["/scripts/start.sh"]
 EXPOSE $PORT
-CMD ["/scripts/start.sh"]
 
