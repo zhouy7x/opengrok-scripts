@@ -26,6 +26,10 @@ def run(p_list, name, reindex=False):
                 stat, ret = utils.Shell(cmd)
                 print("stat:", stat)
 
+        log_dir = os.path.join(LOG_DIR, "index")
+        utils.mkdir(log_dir)
+        utils.Run(["/bin/bash", "/scripts/index.sh", ">", os.path.join(log_dir, "index-%s.log"%name), "2>&1"], env=ENV)
+
 
 if __name__ == '__main__':
     print(">>>>>> Start time:", now())
@@ -33,6 +37,7 @@ if __name__ == '__main__':
     if utils.check_mark(MARK_DIR, P_list):
         REINDEX = True
     run(P_list, timezone(), REINDEX)
+    #utils.Run(["/bin/bash", "/scripts/index.sh"], env=ENV)
     print("<<<<<< Stop time:", now())
     print('\n\n\n')
 
