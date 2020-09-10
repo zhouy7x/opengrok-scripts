@@ -47,7 +47,8 @@ def Run(vec, env=os.environ.copy()):
     try:
         o = subprocess.check_output(vec, stderr=subprocess.STDOUT, env=env)
     except subprocess.CalledProcessError as e:
-        print('output was: ' + e.output)
+        print('output was: ', end="")
+        print(e.output)
         print(e)
         raise e
     o = o.decode("utf-8")

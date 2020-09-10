@@ -26,6 +26,8 @@ def run(p_list, name, reindex=False):
                 stat, ret = utils.Shell(cmd)
                 print("stat:", stat)
 
+        LOCKFILE = "/var/run/opengrok-indexer"
+        os.system("rm -rf "+LOCKFILE)
         log_dir = os.path.join(LOG_DIR, "index")
         utils.mkdir(log_dir)
         utils.Run(["/bin/bash", "/scripts/index.sh", ">", os.path.join(log_dir, "index-%s.log"%name), "2>&1"], env=ENV)
