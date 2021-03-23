@@ -22,15 +22,15 @@ def run(p_list, name, reindex=False):
                 memory = utils.get_available_memory()
                 log_dir = os.path.join(LOG_DIR, project)
                 utils.mkdir(log_dir)
-                cmd = "python3 schedule.py -m %s -p %s > %s/schedule-%s.log 2>&1" % (memory, project, log_dir, name)
+                cmd = "rm -rf /tmp/opengrok-repo-sync-%s.lock ; python3 schedule.py -m %s -p %s > %s/schedule-%s.log 2>&1" % (project, memory, project, log_dir, name)
                 stat, ret = utils.Shell(cmd)
                 print("stat:", stat)
 
-        LOCKFILE = "/var/run/opengrok-indexer"
-        os.system("rm -rf "+LOCKFILE)
         log_dir = os.path.join(LOG_DIR, "index")
         utils.mkdir(log_dir)
-        utils.Run(["/bin/bash", "/scripts/index.sh", ">", os.path.join(log_dir, "index-%s.log"%name), "2>&1"], env=ENV)
+        
+        cmd = "rm -rf /var/run/opengrok-indexer ; /usr/bin/python3 /scripts/index.py > " + os.path.join(log_dir, "index-%s.log"%name) + " 2>&1"
+        utils.Shell(cmd)
 
 
 if __name__ == '__main__':
@@ -39,7 +39,6 @@ if __name__ == '__main__':
     if utils.check_mark(MARK_DIR, P_list):
         REINDEX = True
     run(P_list, timezone(), REINDEX)
-    #utils.Run(["/bin/bash", "/scripts/index.sh"], env=ENV)
     print("<<<<<< Stop time:", now())
     print('\n\n\n')
 
