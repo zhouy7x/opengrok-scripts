@@ -24,8 +24,11 @@ RUN mkdir -p /opengrok /opengrok/etc /opengrok/data /opengrok/src && \
 # install dependencies and Python tools
 ENV http_proxy http://10.239.4.80:913
 ENV https_proxy http://10.239.4.80:913
-RUN apt-get update && apt-get install -y git subversion mercurial unzip inotify-tools python python3 python3-pip python3-venv vim cron procps && \
-    python3 -m pip install /opengrok/tools/opengrok-tools*
+
+RUN apt-get update && apt-get install -y git subversion mercurial unzip inotify-tools vim cron procps 
+RUN mkdir /python3.7 && cd /python3.7 && wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz && \
+tar zxvf Python-3.7.3.tgz && cd Python-3.7.3 && apt install -y zlib* && ./configure --with-ssl && \
+make && make install && python3 -m pip install /opengrok/tools/opengrok-tools*
 
 # compile and install universal-ctags
 RUN apt-get install -y pkg-config autoconf build-essential && git clone https://github.com/universal-ctags/ctags /root/ctags && \
