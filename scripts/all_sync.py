@@ -29,7 +29,7 @@ def run(p_list, name, reindex=False):
         log_dir = os.path.join(LOG_DIR, "index")
         utils.mkdir(log_dir)
         
-        cmd = "rm -rf /var/run/opengrok-indexer ; /usr/bin/python3 /scripts/index.py > " + os.path.join(log_dir, "index-%s.log"%name) + " 2>&1"
+        cmd = "rm -rf /var/run/opengrok-indexer ; NOMIRROR=1 /bin/bash /scripts/index.sh > " + os.path.join(log_dir, "index-%s.log"%name) + " 2>&1"
         utils.Shell(cmd)
 
 
