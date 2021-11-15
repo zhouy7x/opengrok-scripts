@@ -142,7 +142,7 @@ Portions Copyright (c) 2017-2018, Chris Fraire <cfraire@me.com>.
         <dependency>
             <groupId>com.cronutils</groupId>
             <artifactId>cron-utils</artifactId>
-            <version>7.0.2</version>
+            <version>9.1.6</version>
         </dependency>
         <dependency>
             <groupId>org.jvnet.hudson</groupId>
