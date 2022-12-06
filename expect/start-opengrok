@@ -1,0 +1,10 @@
+#!/usr/bin/expect -f
+
+set timeout -1
+spawn docker exec -it opengrok /bin/bash
+#expect  "#" { send "startup.sh\r" }
+expect  "#" { send "cron\r" }
+expect  "#" { send "crontab -l\r" }
+expect  "#" { send "echo ok\r\n" }
+#interact
+

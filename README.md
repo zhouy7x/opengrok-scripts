@@ -6,7 +6,7 @@ For zhouy7x/opengrok docker image.
 [clone]
 ```
 mkdir -p /mnt/docker/
-cd /mnt/docker/ && git clone https://gitlab.devtools.intel.com/zhouy7x/opengrok.git
+cd /mnt/docker/ && git clone https://github.com/zhouy7x/opengrok-scripts.git opengrok
 ```
 
 [docker network proxy]
@@ -56,6 +56,11 @@ docker run -it -d \
 3. If your projects are too large(such as chromium and chromiumos), It maybe needs
 a long time to first index all projects(about 6-12 hours, dependence on your device performance).
 4. Now reindex all projects every Saturday 3:00 am(takes about 3 hours).
+```
+docker exec -it opengrok /bin/bash
+crontab -e   # add new line: 0  3  *    *   6    /usr/bin/python3 /scripts/all_sync.py >> /opengrok/logs/all_sync.log 2>&1 &
+```
+then save and exit.
 5. TODO
 
     You can set your own update frequency(-e "REINDEX=7d"), default is 7d
@@ -64,3 +69,19 @@ a long time to first index all projects(about 6-12 hours, dependence on your dev
 ```
 docker start opengork
 ```
+7. Auto start container when server reboot:
+ a. ```cd /mnt/docker/opengrok/expect/```
+ b. edit start-docker.sh  # e.g. "pushd /mnt/docker/opengrok/expect"
+ c. save and exit;
+ d.  
+```
+sudo chmod 755 ./start-docker.sh
+sudo mv ./start-docker.sh /etc/init.d/
+cd /etc/init.d/
+sudo update-rc.d start-docker.sh defaults 90
+```
+8. If you need to remove autostart:
+```
+sudo update-rc.d -f start-docker.sh remove
+```
+  
