@@ -111,7 +111,6 @@ def index(size=MEMSIZE, env=ENV):
     -J=-Xmx%s -J=-d64 -J=-server  \
     -a /opengrok/lib/opengrok.jar -- \
     -m 256 \
-    --remote on \
     -s /opengrok/src \
     -d /opengrok/data -H -P -S \
     -W /opengrok/etc/configuration.xml \

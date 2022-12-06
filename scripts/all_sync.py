@@ -5,6 +5,7 @@
 @time: 201905/13
 """
 import sys
+import time
 import utils
 from env import *
 
@@ -30,6 +31,9 @@ def run(p_list, name, reindex=False):
         utils.mkdir(log_dir)
         
         cmd = "rm -rf /var/run/opengrok-indexer ; NOMIRROR=1 /bin/bash /scripts/index.sh > " + os.path.join(log_dir, "index-%s.log"%name) + " 2>&1"
+        cmd = "rm -rf /var/run/opengrok-indexer ; /bin/bash /scripts/index.sh > " + os.path.join(log_dir, "index-%s.log"%name) + " 2>&1"
+        utils.Shell(cmd)
+        time.sleep(5)
         utils.Shell(cmd)
 
 
@@ -39,6 +43,7 @@ if __name__ == '__main__':
     if utils.check_mark(MARK_DIR, P_list):
         REINDEX = True
     run(P_list, timezone(), REINDEX)
+    #utils.Run(["/bin/bash", "/scripts/index.sh"], env=ENV)
     print("<<<<<< Stop time:", now())
     print('\n\n\n')
 

@@ -5,8 +5,8 @@ COPY ./ /opengrok-source
 WORKDIR /opengrok-source
 
 # update the system
-ENV http_proxy http://10.239.4.80:913
-ENV https_proxy http://10.239.4.80:913
+ENV http_proxy http://ip-addr:port
+ENV https_proxy http://ip-addr:port
 RUN apt-get update
 
 # find most recent package file
@@ -22,8 +22,8 @@ RUN mkdir -p /opengrok /opengrok/etc /opengrok/data /opengrok/src && \
     rm -f /opengrok.tar.gz
 
 # install dependencies and Python tools
-ENV http_proxy http://10.239.4.80:913
-ENV https_proxy http://10.239.4.80:913
+ENV http_proxy http://ip-addr:port
+ENV https_proxy http://ip-addr:port
 
 RUN apt-get update && apt-get install -y git subversion mercurial unzip inotify-tools vim cron procps 
 RUN mkdir /python3.7 && cd /python3.7 && wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz && \
@@ -48,9 +48,7 @@ ENV PATH /depot_tools:$CATALINA_HOME/bin:$PATH
 ENV JRE_HOME /usr
 ENV CLASSPATH /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar
 ENV PORT 8080
-ENV http_proxy http://10.239.4.80:913
-ENV https_proxy http://10.239.4.80:913
-ENV NO_AUTH_BOTO_CONFIG /opengrok/.boto
+ENV NO_AUTH_BOTO_CONFIG /scripts/.boto
 ENV MIRROR 1
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -70,7 +68,6 @@ RUN sed -i -e 's/Valve/Disabled/' /usr/local/tomcat/conf/server.xml
 
 # add setenv.sh
 COPY setenv.sh $CATALINA_BASE/bin/
-COPY .boto /opengrok/.boto
 
 # add crontab config file
 COPY root /var/spool/cron/crontabs/root

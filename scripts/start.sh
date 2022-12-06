@@ -8,7 +8,7 @@ indexer(){
 	#done
 	#date +"%F %T Startup finished"
 
-	#if [[ ! -d /opengrok/data/index ]]; then
+	if [[ ! -d /opengrok/data/index ]]; then
 		# Populate the webapp with bare configuration.
 		BODY_INCLUDE_FILE="/opengrok/data/body_include"
 		if [[ -f $BODY_INCLUDE_FILE ]]; then
@@ -24,7 +24,7 @@ indexer(){
 		# Perform initial indexing.
 		MIRROR=0 /scripts/index.py
 		date +"%F %T Initial reindex finished"
-	#fi
+	fi
 }
 
 # Start all necessary services.

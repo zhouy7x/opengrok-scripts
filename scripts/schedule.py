@@ -47,18 +47,18 @@ def check_update():
             shell = "/depot_tools/repo sync"
             utils.RunShellWithEnv(shell, env=ENV)
 
-        else:
-            cmd = "/usr/local/bin/opengrok-mirror -U 'http://localhost:%d/' -I %s" % (PORT, PROJECT)
+        elif PROJECT in ["chromium", "v8", "chrome"]:
+            if PROJECT in ["chromium", "chrome"]:
+                os.chdir(folder + '/src')
+            elif PROJECT == "v8":
+                os.chdir(folder + '/v8')
+            cmd = "git reset --hard ; git checkout main ; git pull ; /depot_tools/gclient sync -D -f"
             utils.RunShellWithEnv(cmd, env=ENV)
-
-            if PROJECT in ["chromium", "v8", "chrome"]:
-                if PROJECT in ["chromium", "chrome"]:
-                    os.chdir(folder + '/src')
-                elif PROJECT == "v8":
-                    os.chdir(folder + '/v8')
-
-                cmd2 = "/depot_tools/gclient sync -D -f"
-                utils.RunShellWithEnv(cmd2, env=ENV)
+        else:
+            #cmd = "/usr/local/bin/opengrok-mirror -U 'http://localhost:%d/' -I %s" % (PORT, PROJECT)
+            cmd = "git pull"
+            print(cmd)
+            utils.RunShellWithEnv(cmd, env=ENV)
 
 
 def create_lock(lock_file):
